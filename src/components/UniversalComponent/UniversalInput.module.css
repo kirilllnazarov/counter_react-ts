@@ -1,0 +1,9 @@
+.input {
+	display: flex;
+	flex-wrap: nowrap;
+	gap: 30px;
+}
+
+.error {
+	border: 2px solid rgb(166, 8, 8);
+}
