@@ -6,22 +6,12 @@ type Type = {
 	defaultStartValue: number;
 	maxCountValue: number;
 	startCounterValue: number;
-	incValue: () => void;
-	resetValue: () => void;
-	setVisibleTrue: () => void;
+	incHandler: () => void;
+	resetHandler: () => void;
+	settingsHandler: () => void;
 };
 export const ControlPanel = (props: Type) => {
-	const { defaultStartValue, maxCountValue, startCounterValue, incValue, resetValue, setVisibleTrue } = props;
-
-	const incHandler = () => {
-		incValue();
-	};
-	const resetHandler = () => {
-		resetValue();
-	};
-	const settingsHandler = () => {
-		setVisibleTrue();
-	};
+	const { defaultStartValue, maxCountValue, startCounterValue, incHandler, resetHandler, settingsHandler } = props;
 
 	return (
 		<div className={s.controlPanel}>

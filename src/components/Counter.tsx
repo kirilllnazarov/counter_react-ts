@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import s from "./Counter.module.css";
 import { CounterDisplay } from "./CounterDisplay/CounterDisplay";
 import { CounerSettings } from "./CounerSettings/CounerSettings";
@@ -10,6 +10,7 @@ export const Counter = () => {
 	const [visibleSettings, setVisibleSettings] = useState(false);
 	const [startValue, setStartValue] = useState<number>(defaultStartValue);
 	const [maxValue, setMaxValue] = useState<number>(defaultMaxValue);
+	const [errorMax, setMaxError] = useState<boolean>(false);
 
 	const setVisibleTrue = () => {
 		setVisibleSettings(true);
@@ -18,26 +19,19 @@ export const Counter = () => {
 		setVisibleSettings(false);
 	};
 
+	//work with local storage
 	useEffect(() => {
 		getStartFromLocalStorage();
 		getMaxFromLocalStorage();
 	}, []);
-
+	
 	useEffect(() => {
-		addStartToLocalStorage();
+		localStorage.setItem("lastStartCountValue", JSON.stringify(startValue));
 	}, [startValue]);
 
 	useEffect(() => {
-		addMaxToLocalStorage();
-	}, [maxValue]);
-
-	const addStartToLocalStorage = () => {
-		localStorage.setItem("lastStartCountValue", JSON.stringify(startValue));
-	};
-
-	const addMaxToLocalStorage = () => {
 		localStorage.setItem("lastMaxCountValue", JSON.stringify(maxValue));
-	};
+	}, [maxValue]);
 
 	const getStartFromLocalStorage = () => {
 		const startValueAsString = localStorage.getItem("lastStartCountValue");
@@ -47,7 +41,6 @@ export const Counter = () => {
 			setMaxValue(defaultStartValue);
 		}
 	};
-
 	const getMaxFromLocalStorage = () => {
 		const maxValueAsString = localStorage.getItem("lastMaxCountValue");
 		if (maxValueAsString) {
@@ -57,26 +50,66 @@ export const Counter = () => {
 		}
 	};
 
+	// work with counter display component
+	const incHandler = () => {
+		if (startValue < maxValue) {
+			setStartValue(startValue + 1);
+		}
+	};
+	const resetHandler = () => {
+		setStartValue(defaultStartValue);
+		setMaxValue(defaultMaxValue);
+	};
+	const settingsHandler = () => {
+		setStartValue(defaultStartValue);
+		setMaxValue(defaultStartValue);
+		setVisibleTrue();
+	};
+
+	// work with counter settings component
+	const addStartValue = (event: ChangeEvent<HTMLInputElement>) => {
+		let newStartValue = Number(event.currentTarget.value);
+
+		if (newStartValue >= defaultStartValue) {
+			setStartValue(newStartValue);
+		}
+	};
+	const addMaxValue = (event: ChangeEvent<HTMLInputElement>) => {
+		let newMaxValue = Number(event.currentTarget.value);
+
+		if (newMaxValue > defaultStartValue) {
+			setMaxValue(newMaxValue);
+			setMaxError(false);
+		}
+	};
+	const addNewSettings = () => {
+		if (maxValue) {
+			setVisibleFalse();
+		} else if (maxValue <= defaultStartValue) {
+			setMaxError(true);
+		}
+	};
+
 	return (
 		<div className={s.counterMain}>
 			{visibleSettings ? (
 				<CounerSettings
-					defaultStartValue={defaultStartValue}
-					setVisibleFalse={setVisibleFalse}
 					startValue={startValue}
 					maxValue={maxValue}
-					setStartValue={setStartValue}
-					setMaxValue={setMaxValue}
+					errorMax={errorMax}
+					addStartValue={addStartValue}
+					addMaxValue={addMaxValue}
+					addNewSettings={addNewSettings}
 				/>
 			) : (
 				<CounterDisplay
 					defaultStartValue={defaultStartValue}
 					defaultMaxValue={defaultMaxValue}
-					setStartValue={setStartValue}
-					setMaxValue={setMaxValue}
-					setVisibleTrue={setVisibleTrue}
-					startCounterValue={startValue}
-					maxCounterValue={maxValue}
+					startValue={startValue}
+					maxValue={maxValue}
+					incHandler={incHandler}
+					resetHandler={resetHandler}
+					settingsHandler={settingsHandler}
 				/>
 			)}
 		</div>

@@ -1,46 +1,19 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent } from "react";
 import s from "./CounerSettings.module.css";
 import { UniversalButton } from "../UniversalComponent/UniversalButton";
 import { CounterSettingsInputsPanel } from "./CounterSettingsInputsPanel/CounterSettingsInputsPanel";
 
 type Type = {
-	defaultStartValue: number;
 	startValue: number;
 	maxValue: number;
-	setVisibleFalse: () => void;
-	setStartValue: (value: number) => void;
-	setMaxValue: (value: number) => void;
+	errorMax: boolean;
+	addStartValue: (event: ChangeEvent<HTMLInputElement>) => void;
+	addMaxValue: (event: ChangeEvent<HTMLInputElement>) => void;
+	addNewSettings: () => void;
 };
 
 export const CounerSettings = (props: Type) => {
-	const { defaultStartValue, startValue, maxValue, setVisibleFalse, setStartValue, setMaxValue } = props;
-
-	const [errorMax, setMaxError] = useState<boolean>(false);
-
-	const addStartValue = (event: ChangeEvent<HTMLInputElement>) => {
-		let newStartValue = Number(event.currentTarget.value);
-
-		if (newStartValue >= defaultStartValue) {
-			setStartValue(newStartValue);
-		}
-	};
-
-	const addMaxValue = (event: ChangeEvent<HTMLInputElement>) => {
-		let newMaxValue = Number(event.currentTarget.value);
-
-		if (newMaxValue > defaultStartValue) {
-			setMaxValue(newMaxValue);
-			setMaxError(false);
-		}
-	};
-
-	const addNewSettings = () => {
-		if (maxValue) {
-			setVisibleFalse();
-		} else if (maxValue <= defaultStartValue) {
-			setMaxError(true);
-		}
-	};
+	const { startValue, maxValue, errorMax, addStartValue, addMaxValue, addNewSettings } = props;
 
 	return (
 		<div className={s.settings}>

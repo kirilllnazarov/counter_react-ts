@@ -3,39 +3,28 @@ import { ChangeCountValueDisplay } from "./ChangeCountValueDisplay/ChangeCountVa
 import { ControlPanel } from "./ControlPanel/ControlPanel";
 
 type Type = {
-	setStartValue: (value: number) => void;
-	setMaxValue: (value: number) => void;
-	setVisibleTrue: () => void;
+	incHandler: () => void;
+	resetHandler: () => void;
+	settingsHandler: () => void;
 	defaultStartValue: number;
 	defaultMaxValue: number;
-	startCounterValue: number;
-	maxCounterValue: number;
+	startValue: number;
+	maxValue: number;
 };
 
 export const CounterDisplay = (props: Type) => {
-	const { setStartValue, setMaxValue, setVisibleTrue, defaultStartValue, startCounterValue, maxCounterValue } = props;
-
-	const incValue = () => {
-		if (startCounterValue < maxCounterValue) {
-			setStartValue(startCounterValue + 1);
-		}
-	};
-
-	const resetValue = () => {
-		setStartValue(defaultStartValue);
-		setMaxValue(defaultStartValue);
-	};
+	const { incHandler, resetHandler, settingsHandler, defaultStartValue, defaultMaxValue, startValue, maxValue } = props;
 
 	return (
 		<div className={s.display}>
-			<ChangeCountValueDisplay value={startCounterValue} maxCountValue={maxCounterValue} />
+			<ChangeCountValueDisplay value={startValue} maxCountValue={maxValue} />
 			<ControlPanel
 				defaultStartValue={defaultStartValue}
-				maxCountValue={maxCounterValue}
-				startCounterValue={startCounterValue}
-				incValue={incValue}
-				resetValue={resetValue}
-				setVisibleTrue={setVisibleTrue}
+				maxCountValue={maxValue}
+				startCounterValue={startValue}
+				incHandler={incHandler}
+				resetHandler={resetHandler}
+				settingsHandler={settingsHandler}
 			/>
 		</div>
 	);
