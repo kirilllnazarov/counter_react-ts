@@ -12,6 +12,7 @@ type Type = {
 };
 export const ControlPanel = (props: Type) => {
 	const { defaultStartValue, maxCountValue, startCounterValue, incHandler, resetHandler, settingsHandler } = props;
+	console.log("DISPLAY control panel rendered");
 
 	return (
 		<div className={s.controlPanel}>
@@ -25,3 +26,5 @@ export const ControlPanel = (props: Type) => {
 		</div>
 	);
 };
+
+export const ControlPanelMemo = React.memo(ControlPanel);

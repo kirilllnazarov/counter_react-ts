@@ -12,6 +12,7 @@ type Type = {
 
 export const CounterSettingsInputsPanel = (props: Type) => {
 	const { startValue, maxValue, errorMax, addStartValue, addMaxValue } = props;
+	console.log('SETTINGS inputs rendered');
 
 	return (
 		<div className={s.inputsPanel}>
@@ -20,3 +21,5 @@ export const CounterSettingsInputsPanel = (props: Type) => {
 		</div>
 	);
 };
+
+export const CounterSettingsInputsPanelMemo = React.memo(CounterSettingsInputsPanel)
