@@ -7,6 +7,9 @@ type Type = {
 };
 export const ChangeCountValueDisplay = (props: Type) => {
 	const { value, maxCountValue } = props;
+	console.log("DISPLAY count value rendered");
 
 	return <div className={value < maxCountValue ? s.valueDisplay : s.maxValueDisplay}>{value}</div>;
 };
+
+export const ChangeCountValueDisplayMemo = React.memo(ChangeCountValueDisplay);

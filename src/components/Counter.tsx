@@ -1,8 +1,8 @@
-import React, { useState, useEffect, ChangeEvent, useReducer } from "react";
+import React, { useState, useEffect, ChangeEvent, useReducer, useCallback, useMemo } from "react";
 import s from "./Counter.module.css";
-import { CounterDisplay } from "./CounterDisplay/CounterDisplay";
-import { CounerSettings } from "./CounerSettings/CounerSettings";
-import { reducer } from "./reducer";
+import { CounterDisplayMemo } from "./CounterDisplay/CounterDisplay";
+import { CounerSettingsMemo } from "./CounerSettings/CounerSettings";
+import { reducer } from "./counterReducer";
 
 export const Counter = () => {
 	const defaultStartValue = 0;
@@ -52,14 +52,20 @@ export const Counter = () => {
 	};
 
 	// work with counter display component
+
 	const incHandler = () => {
 		if (startValue < maxValue) {
 			setStartValue(startValue + 1);
 		}
 	};
+	const incHandlerUseMemo = useMemo( ()=> {return incHandler}, [startValue, maxValue]);
+
 	const resetHandler = () => {
 		setStartValue(defaultStartValue);
+		localStorage.clear();
 	};
+	const resetHandlerUseCallback = useMemo(() => {return resetHandler}, [startValue]);
+
 	const settingsHandler = () => {
 		setStartValue(defaultStartValue);
 		setMaxValue(defaultStartValue);
@@ -93,7 +99,7 @@ export const Counter = () => {
 	return (
 		<div className={s.counterMain}>
 			{state.visible ? (
-				<CounerSettings
+				<CounerSettingsMemo
 					startValue={startValue}
 					maxValue={maxValue}
 					errorMax={state.error}
@@ -102,38 +108,39 @@ export const Counter = () => {
 					addNewSettings={addNewSettings}
 				/>
 			) : (
-				<CounterDisplay
+				<CounterDisplayMemo
 					defaultStartValue={defaultStartValue}
 					defaultMaxValue={defaultMaxValue}
 					startValue={startValue}
 					maxValue={maxValue}
-					incHandler={incHandler}
-					resetHandler={resetHandler}
+					incHandler={incHandlerUseMemo}
+					resetHandler={resetHandlerUseCallback}
 					settingsHandler={settingsHandler}
 				/>
 			)}
 		</div>
 	);
 };
-// import React, { useState, useEffect, ChangeEvent } from "react";
+// import React, { useState, useEffect, ChangeEvent, useReducer } from "react";
 // import s from "./Counter.module.css";
 // import { CounterDisplay } from "./CounterDisplay/CounterDisplay";
 // import { CounerSettings } from "./CounerSettings/CounerSettings";
+// import { reducer } from "./counterReducer";
 
 // export const Counter = () => {
 // 	const defaultStartValue = 0;
 // 	const defaultMaxValue = 333;
 
-// 	const [visibleSettings, setVisibleSettings] = useState(false);
+// 	const [state, dispatch] = useReducer(reducer, { visible: false, error: false });
+
 // 	const [startValue, setStartValue] = useState<number>(defaultStartValue);
 // 	const [maxValue, setMaxValue] = useState<number>(defaultMaxValue);
-// 	const [errorMax, setMaxError] = useState<boolean>(false);
 
 // 	const setVisibleTrue = () => {
-// 		setVisibleSettings(true);
+// 		dispatch({ type: "SET_VISIBLE_TRUE" });
 // 	};
 // 	const setVisibleFalse = () => {
-// 		setVisibleSettings(false);
+// 		dispatch({ type: "SET_VISIBLE_FALSE" });
 // 	};
 
 // 	//work with local storage
@@ -175,7 +182,7 @@ export const Counter = () => {
 // 	};
 // 	const resetHandler = () => {
 // 		setStartValue(defaultStartValue);
-// 		setMaxValue(defaultMaxValue);
+// 		localStorage.clear()
 // 	};
 // 	const settingsHandler = () => {
 // 		setStartValue(defaultStartValue);
@@ -196,30 +203,33 @@ export const Counter = () => {
 
 // 		if (newMaxValue > defaultStartValue) {
 // 			setMaxValue(newMaxValue);
-// 			setMaxError(false);
+// 			dispatch({ type: "SET_ERROR_FALSE" });
 // 		}
 // 	};
 // 	const addNewSettings = () => {
 // 		if (maxValue) {
 // 			setVisibleFalse();
 // 		} else if (maxValue <= defaultStartValue) {
-// 			setMaxError(true);
+// 			dispatch({ type: "SET_ERROR_TRUE" });
 // 		}
 // 	};
 
+// 	const CounerSettingsMemo = React.memo(CounerSettings)
+// 	const CounterDisplayMemo = React.memo(CounterDisplay)
+
 // 	return (
 // 		<div className={s.counterMain}>
-// 			{visibleSettings ? (
-// 				<CounerSettings
+// 			{state.visible ? (
+// 				<CounerSettingsMemo
 // 					startValue={startValue}
 // 					maxValue={maxValue}
-// 					errorMax={errorMax}
+// 					errorMax={state.error}
 // 					addStartValue={addStartValue}
 // 					addMaxValue={addMaxValue}
 // 					addNewSettings={addNewSettings}
 // 				/>
 // 			) : (
-// 				<CounterDisplay
+// 				<CounterDisplayMemo
 // 					defaultStartValue={defaultStartValue}
 // 					defaultMaxValue={defaultMaxValue}
 // 					startValue={startValue}

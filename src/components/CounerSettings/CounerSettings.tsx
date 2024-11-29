@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from "react";
 import s from "./CounerSettings.module.css";
 import { UniversalButton } from "../UniversalComponent/UniversalButton";
-import { CounterSettingsInputsPanel } from "./CounterSettingsInputsPanel/CounterSettingsInputsPanel";
+import { CounterSettingsInputsPanelMemo } from "./CounterSettingsInputsPanel/CounterSettingsInputsPanel";
 
 type Type = {
 	startValue: number;
@@ -14,10 +14,11 @@ type Type = {
 
 export const CounerSettings = (props: Type) => {
 	const { startValue, maxValue, errorMax, addStartValue, addMaxValue, addNewSettings } = props;
+	console.log('COUNTER settings rendered');
 
 	return (
 		<div className={s.settings}>
-			<CounterSettingsInputsPanel
+			<CounterSettingsInputsPanelMemo
 				errorMax={errorMax}
 				startValue={startValue}
 				maxValue={maxValue}
@@ -33,3 +34,5 @@ export const CounerSettings = (props: Type) => {
 		</div>
 	);
 };
+
+export const CounerSettingsMemo = React.memo(CounerSettings)
