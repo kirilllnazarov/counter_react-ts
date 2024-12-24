@@ -1,23 +1,27 @@
-import React, { useState, useEffect, ChangeEvent, useReducer, useCallback, useMemo } from "react";
 import s from "./Counter.module.css";
-import { CounterDisplayMemo } from "./CounterDisplay/CounterDisplay";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import type { RootState } from "../app/store";
 import { CounerSettingsMemo } from "./CounerSettings/CounerSettings";
-import { reducer } from "./counterReducer";
+import { CounterDisplayMemo } from "./CounterDisplay/CounterDisplay";
+import { setErrorFalseAC, setErrorTrueAC, setVisibleFalseAC, setVisibleTrueAC, type StateType } from "./counterReducer";
+
+export const defaultStartValue = 0;
+const defaultMaxValue = 333;
 
 export const Counter = () => {
-	const defaultStartValue = 0;
-	const defaultMaxValue = 333;
-
-	const [state, dispatch] = useReducer(reducer, { visible: false, error: false });
+	const selectCounter = (state: RootState): StateType => state.counter;
+	const state = useAppSelector(selectCounter);
+	const dispatch = useAppDispatch();
 
 	const [startValue, setStartValue] = useState<number>(defaultStartValue);
 	const [maxValue, setMaxValue] = useState<number>(defaultMaxValue);
 
 	const setVisibleTrue = () => {
-		dispatch({ type: "SET_VISIBLE_TRUE" });
+		dispatch(setVisibleTrueAC());
 	};
 	const setVisibleFalse = () => {
-		dispatch({ type: "SET_VISIBLE_FALSE" });
+		dispatch(setVisibleFalseAC());
 	};
 
 	//work with local storage
@@ -52,19 +56,22 @@ export const Counter = () => {
 	};
 
 	// work with counter display component
-
 	const incHandler = () => {
 		if (startValue < maxValue) {
 			setStartValue(startValue + 1);
 		}
 	};
-	const incHandlerUseMemo = useMemo( ()=> {return incHandler}, [startValue, maxValue]);
+	// const incHandlerUseMemo = useMemo(() => {
+	// 	return incHandler;
+	// }, [startValue, maxValue]);
 
 	const resetHandler = () => {
 		setStartValue(defaultStartValue);
 		localStorage.clear();
 	};
-	const resetHandlerUseCallback = useMemo(() => {return resetHandler}, [startValue]);
+	// const resetHandlerUseMemo= useMemo(() => {
+	// 	return resetHandler;
+	// }, [startValue]);
 
 	const settingsHandler = () => {
 		setStartValue(defaultStartValue);
@@ -85,14 +92,14 @@ export const Counter = () => {
 
 		if (newMaxValue > defaultStartValue) {
 			setMaxValue(newMaxValue);
-			dispatch({ type: "SET_ERROR_FALSE" });
+			dispatch(setErrorFalseAC());
 		}
 	};
 	const addNewSettings = () => {
 		if (maxValue) {
 			setVisibleFalse();
 		} else if (maxValue <= defaultStartValue) {
-			dispatch({ type: "SET_ERROR_TRUE" });
+			dispatch(setErrorTrueAC());
 		}
 	};
 
@@ -113,8 +120,8 @@ export const Counter = () => {
 					defaultMaxValue={defaultMaxValue}
 					startValue={startValue}
 					maxValue={maxValue}
-					incHandler={incHandlerUseMemo}
-					resetHandler={resetHandlerUseCallback}
+					incHandler={incHandler}
+					resetHandler={resetHandler}
 					settingsHandler={settingsHandler}
 				/>
 			)}

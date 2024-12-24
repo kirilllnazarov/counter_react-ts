@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from "react";
-import s from "./CounerSettings.module.css";
 import { UniversalButton } from "../UniversalComponent/UniversalButton";
+import s from "./CounerSettings.module.css";
 import { CounterSettingsInputsPanelMemo } from "./CounterSettingsInputsPanel/CounterSettingsInputsPanel";
 
 type Type = {
